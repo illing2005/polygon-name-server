@@ -3,6 +3,7 @@
 pragma solidity ^0.8.10;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 import {StringUtils} from "./libraries/StringUtils.sol";
@@ -10,7 +11,7 @@ import {Base64} from "./libraries/Base64.sol";
 
 import "hardhat/console.sol";
 
-contract Domains is ERC721URIStorage {
+contract Domains is Ownable, ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
@@ -29,6 +30,13 @@ contract Domains is ERC721URIStorage {
     {
         tld = _tld;
         console.log("%s name service deployed", _tld);
+    }
+
+    function withdraw() public onlyOwner {
+        uint256 amount = address(this).balance;
+
+        (bool success, ) = msg.sender.call{value: amount}("");
+        require(success, "Failed to withdraw Matic");
     }
 
     // This function will give us the price of a domain based on length
