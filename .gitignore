@@ -9,4 +9,4 @@ cache
 artifacts
 
 .idea
-hardhat.config.js
+.env
