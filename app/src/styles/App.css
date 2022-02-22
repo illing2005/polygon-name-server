@@ -58,8 +58,9 @@ header {
 }
 
 .right {
+  border: 1px solid #ff6968;
   display: flex;
-  background: black;
+  background: white;
   border-radius: 16px;
   padding: 12px 20px;
   height: 99%;
