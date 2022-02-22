@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/polygon-name-server/static/css/main.a8fbb40c.css",
+    "main.js": "/polygon-name-server/static/js/main.43c3e58e.js",
+    "static/media/polygonlogo.png": "/polygon-name-server/static/media/polygonlogo.6cde40a9b9119621eb2b.png",
+    "index.html": "/polygon-name-server/index.html",
+    "main.a8fbb40c.css.map": "/polygon-name-server/static/css/main.a8fbb40c.css.map",
+    "main.43c3e58e.js.map": "/polygon-name-server/static/js/main.43c3e58e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a8fbb40c.css",
+    "static/js/main.43c3e58e.js"
+  ]
+}
