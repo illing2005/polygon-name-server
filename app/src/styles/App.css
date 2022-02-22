@@ -81,7 +81,7 @@ header {
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
-  color: black;
+  color: white;
 }
 
 .connect-wallet-container {
@@ -106,23 +106,6 @@ header {
     #b12a5b 100%
   );
   background-size: 200% 200%;
-  animation: gradient-animation 4s ease infinite;
-}
-
-.mint-button {
-  background: -webkit-linear-gradient(left, #a200d6, #ff6fdf);
-  font-size: 18px;
-  background-size: 200% 200%;
-  animation: gradient-animation 4s ease infinite;
-  margin: 20px 10px;
-  border-radius: 20px;
-  padding: 0px 2rem;
-}
-
-.mint-button:disabled {
-  background: #550072;
-  color: rgb(209, 209, 209);
-  cursor: not-allowed;
 }
 
 .mint-row {
@@ -136,7 +119,7 @@ header {
   cursor: pointer;
   margin-left: 3px;
   top: 20px;
-  border: 0px;
+  border: 0;
   font-size: 12px;
   background-color: transparent;
 }
@@ -165,9 +148,9 @@ header {
 }
 
 input {
-  border: 0;
+  border: 1px solid #000;
   border-radius: 12px;
-  background-color: black;
+  background-color: white;
   color: black;
   letter-spacing: 1px;
   font-size: 26px;
