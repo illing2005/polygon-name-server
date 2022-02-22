@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import polygonLogo from "./assets/polygonlogo.png";
-import ethLogo from "./assets/ethlogo.png";
 import { networks } from "./utils/networks";
 import contractABI from "./utils/contractABI.json";
 import "./styles/App.css";
@@ -338,7 +337,7 @@ const App = () => {
     if (currentAccount && mints.length > 0) {
       return (
         <div className="mint-container">
-          <p className="subtitle"> Recently minted domains!</p>
+          <p className="subtitle">Recently minted domains:</p>
           <div className="mint-list">
             {mints.map((mint, index) => {
               return (
@@ -406,7 +405,7 @@ const App = () => {
           <header>
             <div className="left">
               <p className="title">Polygon Name Service</p>
-              <p className="subtitle">Your immortal API on the blockchain!</p>
+              <p className="subtitle">Your domain on the blockchain!</p>
             </div>
             <div className="right">
               <img alt="Network logo" className="logo" src={polygonLogo} />
@@ -430,7 +429,7 @@ const App = () => {
         <div className="footer-container">
           See on{" "}
           <a
-            href="https://github.com/illing2005/alpaca-nft"
+            href="https://github.com/illing2005/polygon-name-server"
             target="_blank"
             rel="noopener noreferrer"
           >
