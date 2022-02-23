@@ -19,6 +19,9 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  */
 module.exports = {
   solidity: "0.8.10",
+  paths: {
+    artifacts: './app/src/artifacts',
+  },
   networks: {
     mumbai: {
       url: process.env.STAGING_ALCHEMY_KEY,

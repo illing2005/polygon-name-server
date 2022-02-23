@@ -23,7 +23,6 @@ const MintedDomains = ({ mints, tld, contract }) => {
                     </p>
                   </a>
                 </div>
-                <p> {mint.record} </p>
               </div>
             );
           })}
