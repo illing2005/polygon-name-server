@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import polygonLogo from "./assets/polygonlogo.png";
 import { networks } from "./utils/networks";
 import contractABI from "./utils/contractABI.json";
 import "./styles/App.css";
+import MintedDomains from "./components/MintedDomains/MintedDomains";
+import NotConnected from "./components/NotConnected/NotConnected";
+import MintForm from "./components/MintForm/MintForm";
+import Footer from "./components/Footer/Footer";
+import Header from "./components/Header/Header";
 
-const tld = ".alpaca";
+const tld = ".matic";
 const CONTRACT_ADDRESS = "0x66Bb5c144473494822DA2d349D0160BA354e73cd";
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
   const [domain, setDomain] = useState("");
-  const [record, setRecord] = useState("");
   const [network, setNetwork] = useState("");
-  const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mints, setMints] = useState([]);
 
@@ -59,7 +61,6 @@ const App = () => {
       console.log("No authorized account found");
     }
 
-    // This is the new part, we check the user's network chain ID
     const chainId = await ethereum.request({ method: "eth_chainId" });
     setNetwork(networks[chainId]);
 
@@ -69,37 +70,6 @@ const App = () => {
     function handleChainChanged(_chainId) {
       window.location.reload();
     }
-  };
-
-  const updateDomain = async () => {
-    if (!record || !domain) {
-      return;
-    }
-    setLoading(true);
-    console.log("Updating domain", domain, "with record", record);
-    try {
-      const { ethereum } = window;
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const contract = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          contractABI.abi,
-          signer
-        );
-
-        let tx = await contract.setRecord(domain, record);
-        await tx.wait();
-        console.log("Record set https://mumbai.polygonscan.com/tx/" + tx.hash);
-
-        fetchMints();
-        setRecord("");
-        setDomain("");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    setLoading(false);
   };
 
   // Add this function anywhere in your component (maybe after the mint function)
@@ -181,20 +151,11 @@ const App = () => {
             "Domain minted! https://mumbai.polygonscan.com/tx/" + tx.hash
           );
 
-          // Set the record for the domain
-          tx = await contract.setRecord(domain, record);
-          await tx.wait();
-
-          console.log(
-            "Record set! https://mumbai.polygonscan.com/tx/" + tx.hash
-          );
-
           // Call fetchMints after 2 seconds
           setTimeout(() => {
             fetchMints();
           }, 2000);
 
-          setRecord("");
           setDomain("");
         } else {
           alert("Transaction failed! Please try again");
@@ -249,145 +210,6 @@ const App = () => {
     }
   };
 
-  // Create a function to render if wallet is not connected yet
-  const renderNotConnectedContainer = () => (
-    <div className="connect-wallet-container">
-      <button
-        onClick={connectWallet}
-        className="cta-button connect-wallet-button"
-      >
-        Connect Wallet
-      </button>
-    </div>
-  );
-
-  // Form to enter domain name and data
-  const renderInputForm = () => {
-    if (network !== "Polygon Mumbai Testnet") {
-      return (
-        <div className="connect-wallet-container">
-          <div className="connect-wallet-container">
-            <h2>Please switch to Polygon Mumbai Testnet</h2>
-            <button
-              className="cta-button connect-wallet-button"
-              onClick={switchNetwork}
-            >
-              Click here to switch
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="form-container">
-        <div className="first-row">
-          <input
-            type="text"
-            value={domain}
-            placeholder="domain"
-            onChange={(e) => setDomain(e.target.value)}
-          />
-          <p className="tld"> {tld} </p>
-        </div>
-
-        <input
-          type="text"
-          value={record}
-          placeholder="Value to store"
-          onChange={(e) => setRecord(e.target.value)}
-        />
-
-        {/* If the editing variable is true, return the "Set record" and "Cancel" button */}
-        {editing ? (
-          <div className="button-container">
-            <button
-              className="cta-button connect-wallet-button"
-              disabled={loading}
-              onClick={updateDomain}
-              style={{ marginRight: 10 }}
-            >
-              Set record
-            </button>
-            <button
-              className="cta-button connect-wallet-button"
-              onClick={() => {
-                setEditing(false);
-                setDomain("");
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        ) : (
-          <button
-            className="cta-button connect-wallet-button"
-            disabled={loading}
-            onClick={mintDomain}
-          >
-            Mint
-          </button>
-        )}
-      </div>
-    );
-  };
-
-  // Add this render function next to your other render functions
-  const renderMints = () => {
-    if (currentAccount && mints.length > 0) {
-      return (
-        <div className="mint-container">
-          <p className="subtitle">Recently minted domains:</p>
-          <div className="mint-list">
-            {mints.map((mint, index) => {
-              return (
-                <div className="mint-item" key={index}>
-                  <div className="mint-row">
-                    <a
-                      className="link"
-                      href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${mint.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <p className="underlined">
-                        {" "}
-                        {mint.name}
-                        {tld}{" "}
-                      </p>
-                    </a>
-                    {/* If mint.owner is currentAccount, add an "edit" button*/}
-                    {mint.owner.toLowerCase() ===
-                    currentAccount.toLowerCase() ? (
-                      <button
-                        className="edit-button"
-                        onClick={() => editRecord(mint.name)}
-                      >
-                        <img
-                          className="edit-icon"
-                          src="https://img.icons8.com/metro/26/000000/pencil.png"
-                          alt="Edit button"
-                        />
-                      </button>
-                    ) : null}
-                  </div>
-                  <p> {mint.record} </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      );
-    }
-  };
-
-  // This will take us into edit mode and show us the edit buttons!
-  const editRecord = (name) => {
-    console.log("Editing record for", name);
-    setEditing(true);
-    setDomain(name);
-  };
-
-  // This runs our function when the page loads.
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
@@ -401,50 +223,25 @@ const App = () => {
   return (
     <div className="App">
       <div className="container">
-        <div className="header-container">
-          <header>
-            <div className="left">
-              <p className="title">Polygon Name Service</p>
-              <p className="subtitle">Your domain on the blockchain!</p>
-            </div>
-            <div className="right">
-              <img alt="Network logo" className="logo" src={polygonLogo} />
-              {currentAccount ? (
-                <p>
-                  {" "}
-                  Wallet: {currentAccount.slice(0, 6)}...
-                  {currentAccount.slice(-4)}{" "}
-                </p>
-              ) : (
-                <p> Not connected </p>
-              )}
-            </div>
-          </header>
-        </div>
+        <Header currentAccount={currentAccount} />
 
-        {!currentAccount && renderNotConnectedContainer()}
-        {currentAccount && renderInputForm()}
-        {mints && renderMints()}
+        {!currentAccount && <NotConnected connectWaller={connectWallet} />}
+        {currentAccount && (
+          <MintForm
+            tld={tld}
+            network={network}
+            domain={domain}
+            loading={loading}
+            mintDomain={mintDomain}
+            setDomain={setDomain}
+            switchNetwork={switchNetwork}
+          />
+        )}
+        {mints && (
+          <MintedDomains mints={mints} tld={tld} contract={CONTRACT_ADDRESS} />
+        )}
 
-        <div className="footer-container">
-          See on{" "}
-          <a
-            href="https://github.com/illing2005/polygon-name-server"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Github
-          </a>
-          , by{" "}
-          <a
-            href="https://www.linkedin.com/in/sebastian-illing-62320249/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Sebastian Illing
-          </a>
-          .
-        </div>
+        <Footer />
       </div>
     </div>
   );

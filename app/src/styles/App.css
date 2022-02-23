@@ -221,19 +221,6 @@ input:focus {
   color: #ff6968
 }
 
-/* Different background-colour for every nth mint-item */
-.mint-item:nth-child(2n) {
-  background-color: lightblue;
-}
-
-.mint-item:nth-child(3n) {
-  background-color: lightpink;
-}
-
-.mint-item:nth-child(5n) {
-  background-color: lightgreen;
-}
-
 .link {
   color: black;
   text-decoration: none;
