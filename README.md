@@ -1,4 +1,4 @@
-# Polygon Nameserver (PNS)
+# Polygon Name Service (PNS)
 
 This is a simple name server service for the Polygon Network.
 Users can mint domains (.matic) which resemble are human readable name of their wallet address.
