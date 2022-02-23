@@ -10,7 +10,7 @@ import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 
 const tld = ".matic";
-const CONTRACT_ADDRESS = "0x66Bb5c144473494822DA2d349D0160BA354e73cd";
+const CONTRACT_ADDRESS = "0x87b2a28Cb7AB3C59D7dA867DE9B7521E7a2E61FE";
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
@@ -18,6 +18,7 @@ const App = () => {
   const [network, setNetwork] = useState("");
   const [loading, setLoading] = useState(false);
   const [mints, setMints] = useState([]);
+  const [userDomains, setUserDomains] = useState([]);
 
   const connectWallet = async () => {
     try {
@@ -69,6 +70,27 @@ const App = () => {
     // Reload the page when they change networks
     function handleChainChanged(_chainId) {
       window.location.reload();
+    }
+  };
+
+  const fetchUserDomains = async () => {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          contractABI.abi,
+          signer
+        );
+
+        // Get all the domain names from our contract
+        const ownedDomains = await contract.getOwnedDomains();
+        setUserDomains(ownedDomains);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -153,6 +175,7 @@ const App = () => {
 
           // Call fetchMints after 2 seconds
           setTimeout(() => {
+            fetchUserDomains();
             fetchMints();
           }, 2000);
 
@@ -216,6 +239,7 @@ const App = () => {
 
   useEffect(() => {
     if (network === "Polygon Mumbai Testnet") {
+      fetchUserDomains();
       fetchMints();
     }
   }, [currentAccount, network]);
@@ -223,9 +247,13 @@ const App = () => {
   return (
     <div className="App">
       <div className="container">
-        <Header currentAccount={currentAccount} />
+        <Header
+          currentAccount={currentAccount}
+          userDomains={userDomains}
+          tld={tld}
+        />
 
-        {!currentAccount && <NotConnected connectWaller={connectWallet} />}
+        {!currentAccount && <NotConnected connectWallet={connectWallet} />}
         {currentAccount && (
           <MintForm
             tld={tld}

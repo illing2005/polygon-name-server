@@ -28,6 +28,7 @@ contract Domains is Ownable, ERC721URIStorage {
     }
 
     mapping(string => address) public domains;
+    mapping(address => string[]) public ownedDomains;
     mapping(string => Record) public records;
     mapping(uint256 => string) public names;
 
@@ -131,14 +132,23 @@ contract Domains is Ownable, ERC721URIStorage {
         _setTokenURI(newRecordId, finalTokenUri);
         domains[name] = msg.sender;
         names[newRecordId] = name;
+        ownedDomains[msg.sender].push(name);
         records[name].owner = msg.sender;
 
         _tokenIds.increment();
     }
 
     // This will give us the domain owners' address
-    function getDomainOwner(string calldata name) public view returns (address) {
+    function getDomainOwner(string calldata name)
+        public
+        view
+        returns (address)
+    {
         return domains[name];
+    }
+
+    function getOwnedDomains() public view returns (string[] memory) {
+        return ownedDomains[msg.sender];
     }
 
     function getRecordAddress(string calldata name)
